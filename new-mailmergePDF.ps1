@@ -61,11 +61,9 @@
     $doc.close([Microsoft.Office.Interop.Word.WdSaveOptions]::wdDoNotSaveChanges)
     $word.Quit()
 
-    # Clean up COM objects
-    [System.Runtime.Interopservices.Marshal]::ReleaseComObject($doc) | Out-Null
-    [System.Runtime.Interopservices.Marshal]::ReleaseComObject($word) | Out-Null
+    # Clean up COM objects - https://stackoverflow.com/questions/55423220/cant-get-all-excel-processes-to-stop-when-closing-through-powershell
+    $word = $doc = $null
     [gc]::collect() 
-    [gc]::WaitForPendingFinalizers()
 }
 
 # in dem Ordner "Serienbrief" liegt eine Word Serienbriefdatei .docx und eine Excel Datenquelle .xlsx - die PDF Ergebnisdokumente werden im Ordner pdf_out abgelegt
@@ -81,6 +79,10 @@ if ( !$strFirstSheetName ) {
     $strFirstSheetName = $workbook.sheets[1].Name
     #$workbook.sheets | ForEach-Object { Write-Host ("Tabellenblatt {0}: {1}" -f $_.Index, $_.name) }
     $excel.Quit()
+
+    # Clean up COM objects - https://stackoverflow.com/questions/55423220/cant-get-all-excel-processes-to-stop-when-closing-through-powershell
+    $excel = $workbook = $null
+    [gc]::collect() 
 }
 
 new-mailmergePDF -DocumentName ([string[]](Get-ChildItem (Join-Path $PSScriptRoot "Serienbrief") -Filter *.docx).FullName)[0] -DocumentOutPath (Join-Path $PSScriptRoot "pdf_out") -DataSourceName ([string[]](Get-ChildItem (Join-Path $PSScriptRoot "Serienbrief") -Filter *.xlsx).FullName)[0] -SheetName $strFirstSheetName -DataColumnOutFilename 'Dateiname' -Verbose
