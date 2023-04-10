@@ -48,7 +48,6 @@
         $doc.MailMerge.DataSource.FirstRecord = $i
         $doc.MailMerge.DataSource.LastRecord = $i
         $doc.MailMerge.DataSource.ActiveRecord = $i
-
         $doc.Mailmerge.Execute()
 
         $strFileName = [string] (Join-Path $DocumentOutPath $doc.MailMerge.DataSource.DataFields($DataColumnOutFilename).Value)
@@ -58,9 +57,13 @@
         $word.ActiveDocument.Close([Microsoft.Office.Interop.Word.WdSaveOptions]::wdDoNotSaveChanges)
     }
 
+    # Close the document and Word application
     $doc.close([Microsoft.Office.Interop.Word.WdSaveOptions]::wdDoNotSaveChanges)
     $word.Quit()
 
+    # Clean up COM objects
+    [System.Runtime.Interopservices.Marshal]::ReleaseComObject($doc) | Out-Null
+    [System.Runtime.Interopservices.Marshal]::ReleaseComObject($word) | Out-Null
     [gc]::collect() 
     [gc]::WaitForPendingFinalizers()
 }
