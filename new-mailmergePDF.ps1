@@ -24,7 +24,7 @@
         .PARAMETER  DataColumnOutFilename
             Name der Spalte mit dem Dateinamen der PDF Dateien
         .EXAMPLE
-            new-mailmergePDF -DocumentName 'C:\Users\reine\Desktop\TEST_SB\Serienbrief_ps\Serienbrief_Test.docx' -DataName 'C:\Users\reine\Desktop\TEST_SB\Serienbrief_ps\Serienbrief_Daten.xlsx' -SheetName 'Test 1' -DataColumnOutFilename 'Dateiname' -Verbose
+            new-mailmergePDF -DocumentName '.\TEST_SB\Serienbrief_ps\Serienbrief_Test.docx' -DataName '.\TEST_SB\Serienbrief_ps\Serienbrief_Daten.xlsx' -SheetName 'Test 1' -DataColumnOutFilename 'Dateiname' -Verbose
     #>
 
     $word = new-object -com Word.Application
